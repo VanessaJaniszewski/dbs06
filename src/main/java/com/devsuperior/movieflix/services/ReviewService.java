@@ -1,8 +1,5 @@
 package com.devsuperior.movieflix.services;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,7 @@ import com.devsuperior.movieflix.repositories.MovieRepository;
 import com.devsuperior.movieflix.repositories.ReviewRepository;
 import com.devsuperior.movieflix.repositories.UserRepository;
 import com.devsuperior.movieflix.service.exceptions.ForbiddenException;
+import com.devsuperior.movieflix.service.exceptions.UnauthorizedException;
 
 @Service
 public class ReviewService {
@@ -31,20 +29,22 @@ public class ReviewService {
 	@Autowired
 	private AuthService authService;
 
-	@PreAuthorize("hasAnyRole('VISITOR','MEMBER')")
-	@Transactional
-	public void saveReview(Long id, ReviewDTO dto) {
-		Review review;
-		if(id == 0) {
-			review = null;
-		}else {
-		review = repository.getOne(id);
-		review.setMovie(dto.getMovie());
-		review.setText(dto.getText());
-		review.setUser(dto.getUser());
-		repository.save(review);
-		}
-	}
+	 @PreAuthorize("hasAnyRole('MEMBER')")
+	    @Transactional
+	    public ReviewDTO saveReview(ReviewDTO reviewDTO){
+
+	    try{
+	        Review newReview = new Review();
+	        User user = authService.authenticated();
+	        newReview.setId(reviewDTO.getId());
+	        newReview.setText(reviewDTO.getText());
+	        newReview.setMovie(mrepository.getOne(reviewDTO.getMovieId()));
+	        newReview.setUser(user);
+	        repository.save(newReview);
+	        return new ReviewDTO(newReview);
+	    } catch (RuntimeException e){
+	        throw new UnauthorizedException("Usuário não autorizado");
+	    }}
 
 //	@Transactional(readOnly = true)
 //	public List<ReviewDTO> movieReviews(Long movieId) {
@@ -62,7 +62,11 @@ public class ReviewService {
 	@Transactional
 	public void insert(@Valid ReviewInsertDTO dto) {
 		User user = authService.authenticated();
+		if(user == null ) {
+			throw new ForbiddenException("You need to login to make a review");
+		}else {
 		try {
+			
 			Review review = new Review();
 			review.setText(dto.getText());
 			review.setMovie(mrepository.getOne(dto.getMovieId()));
@@ -72,7 +76,7 @@ public class ReviewService {
 		catch(ForbiddenException e) {
 			throw new ForbiddenException("You need to login to make a review");
 		}
-		}
+		}}
 
 
 

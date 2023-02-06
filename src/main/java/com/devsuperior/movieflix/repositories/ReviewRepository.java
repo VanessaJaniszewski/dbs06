@@ -17,12 +17,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 	User findByUser(User user);
 	
-	@Query(nativeQuery = true, value = "select * from tb_review where tb_review.movie_id in "
-			+ " (select tb_movie.id from tb_movie where tb_movie.genre_id = :genreId )")
-	Page<Review> findByGenreId(Long genreId, Pageable pageable);
-
-	 @Query(nativeQuery = true, value ="SELECT * FROM tb_review " +
-	            "where tb_review.movie.id = :movieId")
-	    List<Review> findAllReviewsByMovieId(@Param("movieId")Long idMovie);
+//	@Query(nativeQuery = true, value = "select * from tb_review where tb_review.movie_id in "
+//			+ " (select tb_movie.id from tb_movie where tb_movie.genre_id = :genreId "
+//			+ "order by tb_movie.title )")
+//	Page<Review> findByGenreId(Long genreId, Pageable pageable);
+//
+//	 @Query(nativeQuery = true, value ="SELECT * FROM tb_review " +
+//	            "where tb_review.movie.id = :movieId")
+//	    List<Review> findAllReviewsByMovieId(@Param("movieId")Long idMovie);
+	 
+	 
+	 @Query("SELECT r FROM Review r " +
+	            "WHERE r.movie.id = :idMovie")
+	    List<Review> findAllReviewsByMovieId(@Param("idMovie")Long idMovie);
 
 }

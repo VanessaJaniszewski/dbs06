@@ -19,7 +19,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 	List<Movie> findByMovieId(@Param("movieId")Long movieId);
 
 	@Query(nativeQuery = true, value = "Select * from tb_movie "
-			+ "where tb_movie.genre_id = :genreId "
+			+ "where tb_movie.genre_id = null OR tb_movie.genre_id = :genreId "
 			+ "order by tb_movie.title")
 	Page<Movie> findByGenre(@Param("genreId") Long genreId, Pageable pageable);
 	

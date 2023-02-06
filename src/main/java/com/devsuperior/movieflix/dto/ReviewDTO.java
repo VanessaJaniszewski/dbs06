@@ -1,39 +1,65 @@
 package com.devsuperior.movieflix.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
-
-import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.entities.Review;
 import com.devsuperior.movieflix.entities.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ReviewDTO {
+public class ReviewDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	private Long id;
-	@NotBlank(message = "Please insert a comment.")
-	private String text;
-	private User user;
-	private Movie movie;
-	private Long movieId;
-	private Long userId;
-	
-	public ReviewDTO(Review review) {
-		id = review.getId();
-		text = review.getText();
-		user= review.getUser();
-		movie= review.getMovie();
-		movieId= review.getMovie().getId();
-		userId = review.getUser().getId();
-		
-	}
+    private Long id;
+    @NotBlank(message = "Please insert a valid comment.")
+    private String text;
+    private UserDTO user;
+    private Long movieId;
+
+    public ReviewDTO() {
+    }
+
+    public ReviewDTO(Review review) {
+        id = review.getId();
+        text = review.getText();
+        movieId = review.getMovie().getId();
+        user = new UserDTO(review.getUser());
+    }
+
+    public ReviewDTO(Review review, User user) {
+        id = review.getId();
+        text = review.getText();
+        this.user = new UserDTO(user);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public Long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
+    }
 }

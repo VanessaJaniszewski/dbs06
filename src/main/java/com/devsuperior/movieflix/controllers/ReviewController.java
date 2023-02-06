@@ -24,14 +24,14 @@ public class ReviewController {
 	@Autowired
 	private ReviewService service;
 	
-	@PreAuthorize("hasAnyRole ('MEMBER')")
-	@PutMapping (value = "/reviews/{id}")
-	public ResponseEntity<Void> saveReview(
-			@PathVariable @RequestParam(defaultValue = "0") Long id,
-			@RequestBody ReviewDTO dto) {
-		service.saveReview(id, dto);
-		return ResponseEntity.noContent().build();
-	}
+//	@PreAuthorize("hasAnyRole ('MEMBER')")
+//	@PutMapping (value = "/reviews/{id}")
+//	public ResponseEntity<Void> saveReview(
+//			@PathVariable @RequestParam(defaultValue = "0") Long id,
+//			@RequestBody ReviewDTO dto) {
+//		service.saveReview(id, dto);
+//		return ResponseEntity.noContent().build();
+//	}
 	
 	@PreAuthorize("hasAnyRole ('MEMBER')")
 	@PostMapping(value = "/reviews")
